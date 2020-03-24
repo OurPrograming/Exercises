@@ -42,5 +42,7 @@ double Calculator::calcular(double x1, char op, double x2)
 		return x1 * x2;
 	case '/':
 		return x1 / x2;
+	default:
+		return 0.0;
 	}
 }
