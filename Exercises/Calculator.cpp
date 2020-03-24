@@ -29,3 +29,18 @@ int Calculator::getPriority(char ope)
 	}
 	return 0;
 }
+
+double Calculator::calcular(double x1, char op, double x2)
+{
+	switch (op)
+	{
+	case '+':
+		return x1 + x2;
+	case '-':
+		return x1 - x2;
+	case '*':
+		return x1 * x2;
+	case '/':
+		return x1 / x2;
+	}
+}

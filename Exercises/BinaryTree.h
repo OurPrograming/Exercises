@@ -44,5 +44,13 @@ public:
 	bool printTree(BinaryTreeNode *root);			//带括号输出
 	static bool compare(BinaryTreeNode *tree1, BinaryTreeNode *tree2);	//比较两棵树
 
-	double calcResult();	//计算这颗树的结果
+public:
+	char op1, op2;   //运算符
+	double n1, n2, n3;  //运算数据
+	double re;     //运算结果
+	std::stack<char> opt_s; //运算符栈
+	std::stack<double> num;   //数据栈
+
+	void push_tree(BinaryTreeNode * root);      //把树各结点压入栈
+	double calcResult();	//计算这棵树的结果
 };
