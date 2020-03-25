@@ -1,15 +1,5 @@
 #include "Calculator.h"
 
-Calculator::Calculator()
-{
-
-}
-
-Calculator::~Calculator()
-{
-
-}
-
 bool Calculator::isOperator(char ope)
 {
 	if (ope == '+' || ope == '-' || ope == '*' || ope == '/')
@@ -30,7 +20,7 @@ int Calculator::getPriority(char ope)
 	return 0;
 }
 
-double Calculator::calcular(double x1, char op, double x2)
+double Calculator::calculate(double x1, char op, double x2)
 {
 	switch (op)
 	{
@@ -45,4 +35,19 @@ double Calculator::calcular(double x1, char op, double x2)
 	default:
 		return 0.0;
 	}
+}
+
+string Calculator::toReversePolish(string expression)
+{
+	return string();
+}
+
+BinaryTreeNode * Calculator::toTree(string exp)
+{
+	return nullptr;
+}
+
+double Calculator::calcResult(BinaryTreeNode * root)
+{
+	return 0.0;
 }

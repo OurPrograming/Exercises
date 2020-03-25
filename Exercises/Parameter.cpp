@@ -53,12 +53,13 @@ bool Parameter::disposeParameter()
 				}
 			}
 
+			//去统计类
 			if (option.at(1) == "-e")
 			{
 
 			}
 		}
-		catch (std::out_of_range )
+		catch (std::out_of_range)
 		{
 			cerr << "参数格式不正确!" << endl;
 		}
