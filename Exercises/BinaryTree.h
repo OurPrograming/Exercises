@@ -2,11 +2,9 @@
 
 #include <stack>
 #include <string>
-#include <vector>
 #include <iostream>
 
 using std::string;
-using std::vector;
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -41,5 +39,4 @@ public:
 	BinaryTreeNode * copy(BinaryTreeNode *root);	//复制树
 
 	static bool compare(BinaryTreeNode *tree1, BinaryTreeNode *tree2);	//比较两棵树
-
 };

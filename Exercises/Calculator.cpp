@@ -49,5 +49,24 @@ BinaryTreeNode * Calculator::toTree(string exp)
 
 double Calculator::calcResult(BinaryTreeNode * root)
 {
-	return 0.0;
+	std::stack<double> num;			//数字栈
+	double num1, num2, result;
+
+	if (root != nullptr)
+	{
+		calcResult(root->leftChild);
+		calcResult(root->rightChild);
+		if (isOperator(root->data.at(0)))
+		{
+			num.push(root->data.at(0));    //运算符压入num栈
+		}
+		else
+		{   //结点为运算符时进行运算
+			num1 = num.top();  num.pop();
+			num2 = num.top();  num.pop();
+			result = calculate(num2, root->data.at(0), num1);
+			num.push(result);   //运算结果压入栈
+		}
+	}
+	return num.top();
 }
