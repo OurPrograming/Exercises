@@ -154,47 +154,29 @@ bool BinaryTree::compare(BinaryTreeNode * tree1, BinaryTreeNode * tree2)
 	return false;
 }
 
-void BinaryTree::push_tree(BinaryTreeNode * root)      //把树各结点压入栈
+void BinaryTree::calcResult(BinaryTreeNode * root)   //计算这棵树的结果
 {
 	if (root != nullptr)
 	{
-		//中序遍历将 数字和运算符 分别压入 数字栈和运算符栈
-		BinaryTree::push_tree(root->leftChild);
+		calcResult(root->leftChild);
+		calcResult(root->rightChild);
 		if (Calculator::isOperator(root->data.at(0)))
 		{
-			opt_s.push(root->data.at(0));    //运算符压入opt_s栈
+			num.push(root->data.at(0));    //运算符压入num栈
 		}
 		else
-		{
-			num.push(root->data.at(0));      //数字压入num栈
+		{   //结点为运算符时进行运算
+			n1 = num.top();  num.pop();
+			n2 = num.top();  num.pop();
+			n3 = Calculator::calcular(n3, root->data.at(0), n2);
+			num.push(n3);   //运算结果压入栈
 		}
-		BinaryTree::push_tree(root->rightChild);
 	}
 }
 
-double BinaryTree::calcResult()    //计算这棵树的结果
+double BinaryTree::Result(BinaryTreeNode * root)    //返回这棵树的结果
 {
-	n1 = num.top();
-	op1 = opt_s.top();
-	while (!num.empty())
-	{
-		n2 = num.top();
-		op2 = opt_s.top();
-		op1 = Calculator::getPriority(op1);  //获取运算符优先级
-		op2 = Calculator::getPriority(op2);  //获取运算符优先级
-		if (op1 >= op2)            //优先级高的运算符做运算
-		{
-			n1 = Calculator::calcular(n2, op1, n1);
-			opt_s.push(op2);       //优先级低的运算符重新入栈
-		}
-		else
-		{
-			n3 = num.top();        //重新提取数字
-			n3 = Calculator::calcular(n3, op2, n2);  //计算优先级高的运算
-			num.push(n3);          //运算结果入栈维持计算数据顺序
-			opt_s.push(op1);
-		}
-	}
-	re = n1;
+	calcResult(root);
+	re = num.top();  num.pop();  //提取运算结果，删除栈顶元素
 	return re;
 }
