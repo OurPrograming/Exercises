@@ -32,5 +32,6 @@ public:
 	string getFraction();			//生成分数
 
 	BinaryTree * genExercise();		//生成一道题目
-	bool printTree(BinaryTreeNode *root);		//带括号输出成中缀表达式
+	void standardization(BinaryTreeNode *& root);	//标准化一个节点(处理- /)	
+	bool printTree(BinaryTreeNode *root);			//带括号输出成中缀表达式
 };

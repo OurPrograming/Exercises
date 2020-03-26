@@ -56,6 +56,7 @@ BinaryTree * Generate::genExercise()
 	BinaryTreeNode *right = new BinaryTreeNode(std::to_string(getNumber()));
 	string *data = new string(1, getOperator());
 	BinaryTreeNode *root = new BinaryTreeNode(*data, left, right);
+	standardization(root);
 	opeNum--;
 
 	if (opeNum == 0)		//如果运算符只有一个直接返回
@@ -74,6 +75,7 @@ BinaryTree * Generate::genExercise()
 		right = new BinaryTreeNode(std::to_string(getNumber()));
 		data = new string(1, getOperator());
 		BinaryTreeNode *tempRoot = new BinaryTreeNode(*data, left, right);
+		standardization(tempRoot);
 		opeNum--;
 
 		//选择左右顺序
@@ -90,6 +92,7 @@ BinaryTree * Generate::genExercise()
 		//连接
 		data = new string(1, getOperator());
 		root = new BinaryTreeNode(*data, left, right);
+		standardization(root);
 		opeNum--;
 
 		BinaryTree *tree = new BinaryTree(root);
@@ -112,6 +115,7 @@ BinaryTree * Generate::genExercise()
 			}
 			data = new string(1, getOperator());
 			root = new BinaryTreeNode(*data, left, right);
+			standardization(root);
 			opeNum--;
 		} while (opeNum > 0);
 
@@ -119,6 +123,23 @@ BinaryTree * Generate::genExercise()
 		return tree;
 	}
 	return nullptr;
+}
+
+void Generate::standardization(BinaryTreeNode *& root)
+{
+	if (root->data.at(0) == '-')
+	{
+		double left, right;
+		left = Calculator::calcResult(root->leftChild);
+		right = Calculator::calcResult(root->rightChild);
+		if (left < right)		//小于就反向
+		{
+			BinaryTreeNode *temp = root->leftChild;
+			root->leftChild = root->rightChild;
+			root->rightChild = temp;
+			temp = nullptr;
+		}
+	}
 }
 
 bool Generate::printTree(BinaryTreeNode * root)
