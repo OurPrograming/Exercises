@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClInclude Include="BinaryTree.h" />
     <ClInclude Include="Calculator.h" />
+    <ClInclude Include="Fraction.h" />
     <ClInclude Include="Generate.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Parameter.h" />
@@ -124,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="BinaryTree.cpp" />
     <ClCompile Include="Calculator.cpp" />
+    <ClCompile Include="Fraction.cpp" />
     <ClCompile Include="Generate.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parameter.cpp" />

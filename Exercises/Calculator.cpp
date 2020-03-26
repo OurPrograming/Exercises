@@ -126,5 +126,19 @@ BinaryTreeNode * Calculator::toTree(string exp)  //逆波兰式转为树
 
 double Calculator::calcResult(BinaryTreeNode * root)
 {
-	
+	double left, right;
+	if (root != nullptr)
+	{
+		left = calcResult(root->leftChild);
+		right = calcResult(root->rightChild);
+		if (!isOperator(root->data.at(0)))		//数字直接返回
+		{
+			return std::stoi(root->data);
+		}
+		else
+		{
+			return calculate(left, root->data.at(0), right);
+		}
+	}
+	return 0.0;
 }

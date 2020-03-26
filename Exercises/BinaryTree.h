@@ -3,6 +3,7 @@
 #include <stack>
 #include <string>
 #include <iostream>
+#include "Fraction.h"
 
 using std::string;
 using std::cout;

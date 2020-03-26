@@ -4,13 +4,14 @@
 
 int main(int argc, char *argv[])
 {
-	//处理参数
+	/*//处理参数
 	Parameter par(argc, argv); 
-	par.disposeParameter();
+	par.disposeParameter();*/
 
-	/*Generate *test = new Generate(30);
+	Generate *test = new Generate(30);
 	BinaryTree *tree = test->genExercise();
-	test->printTree(tree->pRoot);*/
+	test->printTree(tree->pRoot);
+	cout << endl << Calculator::calcResult(tree->pRoot);
 	
 	system("pause");
 	return 0;
