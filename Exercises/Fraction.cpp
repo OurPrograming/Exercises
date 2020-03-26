@@ -77,23 +77,23 @@ int Fraction::getCoefficient()
 
 string Fraction::display()
 {
-	//整数 分子为0，输出系数
-	//真分数(系数为0)		a/b
+	//整数 分子为0(系数任意)，输出系数
+	//真分数(系数为0且分子不为0)		a/b
 	//带分数(系数不为0且分子不为0)	a'b/c
-	if (coefficient == 0)		//真分数
+	if (numerator == 0)			//整数
+	{
+		return string(std::to_string(coefficient));
+	}
+	else if (coefficient == 0)	//系数为0，真分数
 	{
 		string num = std::to_string(numerator) + "/" + std::to_string(denominator);
 		return string(num);
 	}
-	else if (numerator != 0)	//带分数
+	else						//系数不为0，带分数
 	{
 		string num1 = std::to_string(coefficient) + "'";
 		string num2 = std::to_string(numerator) + "/" + std::to_string(denominator);
 		return string(num1 + num2);
-	}
-	else						//整数
-	{
-		return string(std::to_string(coefficient));
 	}
 }
 
@@ -197,8 +197,8 @@ bool operator>(Fraction a, Fraction b)
 	b.improper();
 
 	//计算真值
-	int trueNumA = (double)a.numerator / (double)a.denominator;
-	int trueNumB = (double)b.numerator / (double)b.denominator;
+	double trueNumA = (double)a.numerator / (double)a.denominator;
+	double trueNumB = (double)b.numerator / (double)b.denominator;
 
 	//返回前化简
 	a.simple();
@@ -217,8 +217,8 @@ bool operator<(Fraction a, Fraction b)
 	b.improper();
 
 	//计算真值
-	int trueNumA = (double)a.numerator / (double)a.denominator;
-	int trueNumB = (double)b.numerator / (double)b.denominator;
+	double trueNumA = (double)a.numerator / (double)a.denominator;
+	double trueNumB = (double)b.numerator / (double)b.denominator;
 
 	//返回前化简
 	a.simple();
