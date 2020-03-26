@@ -129,7 +129,7 @@ void Generate::standardization(BinaryTreeNode *& root)
 {
 	if (root->data.at(0) == '-')
 	{
-		double left, right;
+		Fraction left, right;
 		left = Calculator::calcResult(root->leftChild);
 		right = Calculator::calcResult(root->rightChild);
 		if (left < right)		//小于就反向

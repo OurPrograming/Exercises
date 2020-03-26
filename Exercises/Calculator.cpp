@@ -22,7 +22,7 @@ int Calculator::getPriority(char ope)
 	return 0;
 }
 
-double Calculator::calculate(double x1, char op, double x2)
+Fraction Calculator::calculate(Fraction x1, char op, Fraction x2)
 {
 	switch (op)
 	{
@@ -47,26 +47,26 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 
 	for (int i = 0; i != expression.length(); i++)  //´ÓexpressionÖĞÖğ¸öÈ¡³ö×Ö·û
 	{
-		if (isOperator(expression[i]))  //ÈôÈ¡³öÔËËã·û
+		if (isOperator(expression.at(i)))  //ÈôÈ¡³öÔËËã·û
 		{
-			if (S1.empty() || expression[i] == '(')
+			if (S1.empty() || expression.at(i) == '(')
 			{
-				S1.push(expression[i]);   //ÈôÕ»¿Õ»òÔËËã·ûÎª'('Ö±½ÓÈëÕ»S1
+				S1.push(expression.at(i));   
 			}
-			else if(expression[i] == ')')
+			else if(expression.at(i) == ')')
 			{
 				do
 				{   //ÈôÌáÈ¡µ½')'£¬½«Õ»S1ÖĞµÄÔËËã·ûÖğ¸öÈ¡³ö
 					ope = S1.top();   S1.pop();
 					if (ope != '(')
 					{
-						S2.push(ope);  //ÈôÈ¡³öµÄ²»ÊÇ'('£¬ÔòÑ¹ÈëÕ»S2
+						S2.push(ope);  
 					}
 				} while (ope != '(');  //È¡³ö'('ºóÍ£Ö¹Ñ­»·£¬²¢Å×Æú'('
 			}
-			else if (getPriority(expression[i]) > getPriority(S1.top()))  //±È½ÏÓÅÏÈ¼¶
+			else if (getPriority(expression.at(i)) > getPriority(S1.top()))  //±È½ÏÓÅÏÈ¼¶
 			{
-				S1.push(expression[i]);  //¸ÃÔËËã·ûÓÅÏÈ¼¶±ÈÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶¸ß£¬Ö±½ÓÈëÕ»
+				S1.push(expression.at(i));  //¸ÃÔËËã·ûÓÅÏÈ¼¶±ÈÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶¸ß£¬Ö±½ÓÈëÕ»
 			}
 			else
 			{
@@ -74,13 +74,13 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 				{   //´ÓÔËËã·ûÕ»S1Öğ¸öÈ¡³öÔËËã·û²¢Ñ¹Èë±í´ïÊ½Õ»S2£¬Ö±µ½¸ÃÔËËã·ûÓÅÏÈ¼¶±ÈÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶¸ß
 					ope = S1.top();   S1.pop();
 					S2.push(ope);  
-				} while (getPriority(expression[i]) > getPriority(S1.top()));
-				S1.push(expression[i]);   //Íê³É²Ù×÷ºó¸ÃÔËËã·ûÓÅÏÈ¼¶±ÈÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶¸ß£¬ÈëÔËËã·ûÕ»S1
+				} while (getPriority(expression.at(i)) > getPriority(S1.top()));
+				S1.push(expression.at(i));   //Íê³É²Ù×÷ºó¸ÃÔËËã·ûÓÅÏÈ¼¶±ÈÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶¸ß£¬ÈëÔËËã·ûÕ»S1
 			}
 		}
 		else
 		{
-			S2.push(expression[i]);   //ÈôÈ¡³öÊı×Ö£¬Ö±½ÓÈë±í´ïÊ½Õ»S2
+			S2.push(expression.at(i));   //ÈôÈ¡³öÊı×Ö£¬Ö±½ÓÑ¹Èë±í´ïÊ½Õ»S2
 		}
 	}
 	while (!S2.empty())   //½«±í´ïÊ½Õ»ÄæĞò
@@ -90,33 +90,34 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 	}
 	for (int j = 0; !S1.empty(); j++)  //Êä³öÄæ²¨À¼Ê½
 	{
-		expression[j] = S1.top();   S1.pop();
+		expression.at(j) = S1.top();   S1.pop();
 	}
 	return expression;  //·µ»ØÄæ²¨À¼Ê½
 }
 
 BinaryTreeNode * Calculator::toTree(string exp)  //Äæ²¨À¼Ê½×ªÎªÊ÷
 {
-	std::stack<BinaryTreeNode*> num;  //Êı×ÖÕ»
-	BinaryTreeNode *exp_ptr;  //½áµãÖ¸Õë
-	BinaryTreeNode *right;    //ÓÒº¢×ÓÖ¸Õë
-	BinaryTreeNode *left;     //×óº¢×ÓÖ¸Õë
-	string data;              //½áµãÊı¾İ
+	std::stack<BinaryTreeNode*> num;    //Êı×ÖÕ»
+	BinaryTreeNode *exp_ptr = nullptr;  //½áµãÖ¸Õë
+	BinaryTreeNode *right = nullptr;    //ÓÒº¢×ÓÖ¸Õë
+	BinaryTreeNode *left = nullptr;     //×óº¢×ÓÖ¸Õë
+	string *data;         //½áµãÊı¾İ
 
 	for (int i = 1; i != exp[exp.length()]; i++)  //Öğ¸ö×Ö·û¶ÁÈ¡Äæ²¨À¼Ê½
 	{
 		exp_ptr = new BinaryTreeNode();
-		if (isOperator(exp[i]))     //¶ÁÈ¡µ½ÔËËã·û
+		if (isOperator(exp.at(i)))     //¶ÁÈ¡µ½ÔËËã·û
 		{
 			right = num.top();  num.pop();
 			left = num.top();  num.pop();
-			data.push_back(exp[i]);      //½«ÔËËã·û×ª»¯ÎªstringÀàĞÍ£¬²¢¸³¸ø½áµãÊı¾İdata
-			BinaryTreeNode *exp_root = new BinaryTreeNode(data, left, right);  //¹¹½¨ĞÂÊ÷
+			data = new string(1,exp.at(i));     //½«ÔËËã·û×ª»¯ÎªstringÀàĞÍ£¬²¢¸³¸ø½áµãÊı¾İdata
+			
+			BinaryTreeNode *exp_root = new BinaryTreeNode(*data, left, right);  //¹¹½¨ĞÂÊ÷
 			num.push(exp_root);
 		}
 		else
 		{   //¶ÁÈ¡µ½Êı×Ö£¬Ö±½ÓÑ¹ÈëÊı×ÖÕ»num
-			exp_ptr->data = exp[i];
+			exp_ptr->data = exp.at(i);
 			num.push(exp_ptr);
 		}
 	}
@@ -124,16 +125,17 @@ BinaryTreeNode * Calculator::toTree(string exp)  //Äæ²¨À¼Ê½×ªÎªÊ÷
 	return exp_ptr;   //·µ»ØÊ÷µÄ¸ù½áµã
 }
 
-double Calculator::calcResult(BinaryTreeNode * root)
+Fraction Calculator::calcResult(BinaryTreeNode * root)
 {
-	double left, right;
+	Fraction left, right;
 	if (root != nullptr)
 	{
 		left = calcResult(root->leftChild);
 		right = calcResult(root->rightChild);
 		if (!isOperator(root->data.at(0)))		//Êı×ÖÖ±½Ó·µ»Ø
 		{
-			return std::stoi(root->data);
+			return root->data;
+			//return std::stoi(root->data);
 		}
 		else
 		{
