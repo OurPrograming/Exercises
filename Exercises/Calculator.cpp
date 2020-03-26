@@ -92,14 +92,36 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖÐ×º±í´ïÊ½×ªÎªÄæ²¨À
 	{
 		expression[j] = S1.top();   S1.pop();
 	}
-	return expression;
+	return expression;  //·µ»ØÄæ²¨À¼Ê½
 }
 
 BinaryTreeNode * Calculator::toTree(string exp)  //Äæ²¨À¼Ê½×ªÎªÊ÷
 {
-	BinaryTreeNode *exp_root;
+	std::stack<BinaryTreeNode*> num;  //Êý×ÖÕ»
+	BinaryTreeNode *exp_ptr;  //½áµãÖ¸Õë
+	BinaryTreeNode *right;    //ÓÒº¢×ÓÖ¸Õë
+	BinaryTreeNode *left;     //×óº¢×ÓÖ¸Õë
+	string data;              //½áµãÊý¾Ý
 
-	return nullptr;
+	for (int i = 1; i != exp[exp.length()]; i++)  //Öð¸ö×Ö·û¶ÁÈ¡Äæ²¨À¼Ê½
+	{
+		exp_ptr = new BinaryTreeNode();
+		if (isOperator(exp[i]))     //¶ÁÈ¡µ½ÔËËã·û
+		{
+			right = num.top();  num.pop();
+			left = num.top();  num.pop();
+			data.push_back(exp[i]);      //½«ÔËËã·û×ª»¯ÎªstringÀàÐÍ£¬²¢¸³¸ø½áµãÊý¾Ýdata
+			BinaryTreeNode *exp_root = new BinaryTreeNode(data, left, right);  //¹¹½¨ÐÂÊ÷
+			num.push(exp_root);
+		}
+		else
+		{   //¶ÁÈ¡µ½Êý×Ö£¬Ö±½ÓÑ¹ÈëÊý×ÖÕ»num
+			exp_ptr->data = exp[i];
+			num.push(exp_ptr);
+		}
+	}
+	exp_ptr = num.top();  num.pop();  //´ÓÕ»¶¥È¡³ö½¨ºÃµÄÊ÷µÄ¸ù½áµã
+	return exp_ptr;   //·µ»ØÊ÷µÄ¸ù½áµã
 }
 
 double Calculator::calcResult(BinaryTreeNode * root)
