@@ -86,7 +86,7 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 		}
 		else
 		{ 
-			if (expression.at(i) != ' ')  i++;  //¸ôÀëµÚÒ»¸ö¿Õ¸ñ
+			if (expression.at(i) == ' ')  i++;  //¸ôÀëµÚÒ»¸ö¿Õ¸ñ
 			fat = new string;
 			do  
 			{   //±£´æ·ÖÊı×Ö·û´®
@@ -114,7 +114,7 @@ BinaryTreeNode * Calculator::toTree(string exp)  //Äæ²¨À¼Ê½×ªÎªÊ÷
 	BinaryTreeNode *exp_ptr = nullptr;  //½áµãÖ¸Õë
 	BinaryTreeNode *right = nullptr;    //ÓÒº¢×ÓÖ¸Õë
 	BinaryTreeNode *left = nullptr;     //×óº¢×ÓÖ¸Õë
-	string *data;         //½áµãÊı¾İ
+	string *data, *fat;         //½áµãÊı¾İ,·ÖÊı
 
 	for (int i = 1; i != exp[exp.length()]; i++)  //Öğ¸ö×Ö·û¶ÁÈ¡Äæ²¨À¼Ê½
 	{
@@ -129,8 +129,13 @@ BinaryTreeNode * Calculator::toTree(string exp)  //Äæ²¨À¼Ê½×ªÎªÊ÷
 			num.push(exp_root);
 		}
 		else
-		{   //¶ÁÈ¡µ½Êı×Ö£¬Ö±½ÓÑ¹ÈëÊı×ÖÕ»num
-			exp_ptr->data = exp.at(i);
+		{   //¶ÁÈ¡µ½Êı×Ö£¬Éú³ÉÍêÕû·ÖÊı×Ö·û´®£¬²¢Ñ¹ÈëÊı×ÖÕ»num
+			if (exp.at(i) == ' ')   i++;   //¸ôÀëµÚÒ»¸ö¿Õ¸ñ
+			do
+			{   //±£´æ·ÖÊı×Ö·û´®
+				*fat += exp.at(i++);
+			} while (exp.at(i) = ' ');
+			exp_ptr->data = *fat;
 			num.push(exp_ptr);
 		}
 	}
