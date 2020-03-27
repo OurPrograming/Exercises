@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include "Generate.h"
+#include "Statistics.h"
 
 using std::string;
 using std::vector;

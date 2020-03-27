@@ -69,6 +69,8 @@ void Parameter::generateExercises(int num, int range)
 		answers << i + 1 << "." << strAnswers.c_str() << endl;
 	}
 
+	cout << "题目与答案已写入到文件" << endl;
+
 	delete generate;
 	//关闭文件
 	exercises.close();
@@ -117,7 +119,9 @@ void Parameter::disposeParameter()
 			//去统计类
 			if (option.at(1) == "-e")
 			{
-
+				Statistics statistics(option.at(2), option.at(4));
+				statistics.countResult();
+				cout << "统计结果已输出到Grate.txt" << endl;
 			}
 		}
 		catch (std::out_of_range)

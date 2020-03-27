@@ -16,11 +16,15 @@ public:
 	~Statistics();
 
 private:
-	vector<int> number;			//错的题目序号
+	vector<int> correct;		//错的题目序号
+	vector<int> wrong;			//错误题目序号
+
+	string exePath;				//路径
+	string ansPath;
 
 	fstream exercises;			//题目文件
 	fstream answers;			//题目答案
-	fstream grate;				//输出到统计结果
+	fstream grade;				//输出到统计结果
 
 public:
 	void countResult();			//统计结果

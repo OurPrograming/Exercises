@@ -91,7 +91,7 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 			do  
 			{   //±£´æ·ÖÊı×Ö·û´®
 				*fat += expression.at(i++);
-			} while (expression.at(i) = ' ');
+			} while (expression.at(i) != ' ');
 			S2.push(*fat);    //Éú³É·ÖÊı×Ö·û´®£¬²¢Ñ¹Èë±í´ïÊ½Õ»S2
 		}
 	}
