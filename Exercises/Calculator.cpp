@@ -22,7 +22,7 @@ int Calculator::getPriority(char ope)
 	return 0;
 }
 
-double Calculator::calculate(double x1, char op, double x2)
+Fraction Calculator::calculate(Fraction x1, char op, Fraction x2)
 {
 	switch (op)
 	{
@@ -35,7 +35,7 @@ double Calculator::calculate(double x1, char op, double x2)
 	case '/':
 		return x1 / x2;
 	default:
-		return 0.0;
+		return Fraction(0);
 	}
 }
 
@@ -124,21 +124,21 @@ BinaryTreeNode * Calculator::toTree(string exp)  //逆波兰式转为树
 	return exp_ptr;   //返回树的根结点
 }
 
-double Calculator::calcResult(BinaryTreeNode * root)
+Fraction Calculator::calcResult(BinaryTreeNode * root)
 {
-	double left, right;
+	Fraction left, right;
 	if (root != nullptr)
 	{
 		left = calcResult(root->leftChild);
 		right = calcResult(root->rightChild);
 		if (!isOperator(root->data.at(0)))		//数字直接返回
 		{
-			return std::stoi(root->data);
+			return Fraction(root->data);
 		}
 		else
 		{
 			return calculate(left, root->data.at(0), right);
 		}
 	}
-	return 0.0;
+	return Fraction(0);
 }

@@ -29,9 +29,10 @@ private:
 public:
 	int getNumber();				//取随机数
 	char getOperator();				//取操作符
-	string getFraction();			//生成分数
+	Fraction getFraction();			//生成分数
 
 	BinaryTree * genExercise();		//生成一道题目
-	void standardization(BinaryTreeNode *& root);	//标准化一个节点(处理- /)	
-	bool printTree(BinaryTreeNode *root);			//带括号输出成中缀表达式
+	void standardization(BinaryTreeNode *& root);			//标准化一个节点(处理-)	
+	bool toString(BinaryTreeNode *root, string &strExercise);		//带括号输出成中缀表达式(string)
+	string getExercise(BinaryTreeNode *root);				//转换要用到递归，无法初始化string
 };

@@ -43,6 +43,13 @@ BinaryTreeNode * BinaryTree::copy(BinaryTreeNode * root)
 
 bool BinaryTree::compare(BinaryTreeNode * tree1, BinaryTreeNode * tree2)
 {
+	//树为空或部分空的情况
+	if (tree1 == nullptr && tree2 == nullptr)
+		return true;
+	if ((tree1 == nullptr && tree2 != nullptr) ||
+		(tree1 != nullptr && tree2 == nullptr))
+		return false;
+
 	//根节点
 	if (tree1->data != tree2->data)
 		return false;

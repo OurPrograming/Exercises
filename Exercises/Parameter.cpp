@@ -16,7 +16,66 @@ Parameter::~Parameter()
 	option.clear();
 }
 
-bool Parameter::disposeParameter()
+void Parameter::generateExercises(int num, int range)
+{
+	if (num == 0 || range == 0)
+		return;
+	
+	//打开文件
+	exercises.open("Exercises.txt", std::ios::out | std::ios::trunc);
+	answers.open("Answers.txt", std::ios::out | std::ios::trunc);
+	if (!exercises.is_open() || !answers.is_open())
+		return;
+	
+	//每生成一个表达式都与其他元素比较，不重复就入栈
+	vector<BinaryTreeNode *> exe;			//用于存放表达式树
+	exe.reserve(num);						//预留空间避免过多扩容
+
+	vector<BinaryTreeNode *>::iterator ite;
+	Generate *generate = generate = new Generate(range);
+	BinaryTree *tree = nullptr;
+	bool flag = false;					//标志是否重复
+
+	for (int i = 0; i < num; i++)			//生成num个
+	{
+		do
+		{
+			tree = generate->genExercise();
+			for (ite = exe.begin(); ite != exe.end(); ite++)
+			{
+				flag = BinaryTree::compare(tree->pRoot, *ite);
+				if (flag == true)		//匹配到重复就跳出判断，避免标志被更改
+				{
+					//重复就删除生成的树
+					delete tree;
+					tree = nullptr;
+					break;
+				}
+			}			
+		} while (flag == true);
+
+		if (flag == false)		//未重复就push
+		{
+			exe.push_back(tree->pRoot);
+		}
+	}
+
+	for (int i = 0; i < (int)exe.size(); i++)
+	{
+		string strExercises = generate->getExercise(exe.at(i));
+		exercises << i + 1 << "." << strExercises.c_str() << endl;
+		
+		string strAnswers = Calculator::calcResult(exe.at(i)).display();
+		answers << i + 1 << "." << strAnswers.c_str() << endl;
+	}
+
+	delete generate;
+	//关闭文件
+	exercises.close();
+	answers.close();
+}
+
+void Parameter::disposeParameter()
 {
 	int num = 0;
 	//	-n 10 题目数量10
@@ -40,7 +99,7 @@ bool Parameter::disposeParameter()
 				}
 			}
 
-			if (option.at(1) == "-r" || option.at(3) == "r")
+			if (option.at(1) == "-r" || option.at(3) == "-r")
 			{
 				if (option.at(1) == "-r")
 				{
@@ -52,6 +111,8 @@ bool Parameter::disposeParameter()
 					range = std::stoi(option.at(4));
 				}
 			}
+			//得到num， range之后生成题目和答案
+			generateExercises(num, range);
 
 			//去统计类
 			if (option.at(1) == "-e")
@@ -64,7 +125,8 @@ bool Parameter::disposeParameter()
 			cerr << "参数格式不正确!" << endl;
 		}
 	}
-
-	cerr << "请输入正确的参数!" << endl << endl;
-	return false;
+	else
+	{
+		cerr << "请输入正确的参数!" << endl << endl;
+	}
 }
