@@ -121,6 +121,7 @@
     <ClInclude Include="Generate.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Parameter.h" />
+    <ClInclude Include="Statistics.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BinaryTree.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Generate.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parameter.cpp" />
+    <ClCompile Include="Statistics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
