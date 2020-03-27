@@ -121,7 +121,7 @@ void Parameter::disposeParameter()
 			{
 				Statistics statistics(option.at(2), option.at(4));
 				statistics.countResult();
-				cout << "统计结果已输出到Grate.txt" << endl;
+				cout << "统计结果已输出到Grade.txt" << endl;
 			}
 		}
 		catch (std::out_of_range)

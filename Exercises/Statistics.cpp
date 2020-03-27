@@ -46,6 +46,12 @@ void Statistics::countResult()
 		count++;	//题号
 
 		//计算题目结果
+		string a = Calculator::toReversePolish(exe);
+		cout << a << 'a' << endl;
+		//string a = "99 6 * 9/79 /";
+		//BinaryTreeNode * b = Calculator::toTree(a);
+
+		//result = Calculator::calcResult(b);	
 		result = Calculator::calcResult(Calculator::toTree(Calculator::toReversePolish(exe)));
 
 		//判断结果

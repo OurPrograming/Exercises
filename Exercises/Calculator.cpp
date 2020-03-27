@@ -43,13 +43,12 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 {
 	std::stack<string> S1;  //ÔËËã·ûÕ»
 	std::stack<string> S2;  //Äæ²¨À¼Ê½Õ»
-	string *ope, *fat;     //ÔËËã·û,·ÖÊı
+	string *ope;     //ÔËËã·û,·ÖÊı
 	string *exp = new string;  //Äæ²¨À¼Ê½
 	string *leftbracket = new string(1, '(');    //×óÀ¨ºÅ
 
-	for (int i = 0; i != expression.length(); i++)  //´ÓexpressionÖĞÖğ¸öÈ¡³ö×Ö·û
+	for (int i = 0; i < expression.length(); i++)  //´ÓexpressionÖĞÖğ¸öÈ¡³ö×Ö·û
 	{
-		ope = new string;
 		if (isOperator(expression.at(i)))  //ÈôÈ¡³öÔËËã·û
 		{
 			if (S1.empty() || expression.at(i) == '(')
@@ -59,14 +58,18 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 			}
 			else if(expression.at(i) == ')')
 			{
-				do
-				{   //ÈôÌáÈ¡µ½')'£¬½«Õ»S1ÖĞµÄÔËËã·ûÖğ¸öÈ¡³ö
-					*ope = S1.top();   S1.pop();
-					if (*ope != *leftbracket)
+				ope = new string;
+				*ope = S1.top();   S1.pop();
+				while ((*ope).at(0) != '(')  //È¡³ö'('ºóÍ£Ö¹Ñ­»·£¬²¢Å×Æú'('
+				{
+					if ((*ope).at(0) != '(')
 					{
-						S2.push(*ope);  
+						S2.push(*ope);
 					}
-				} while (*ope != *leftbracket);  //È¡³ö'('ºóÍ£Ö¹Ñ­»·£¬²¢Å×Æú'('
+					ope = new string;
+					*ope = S1.top();   S1.pop();
+				}
+				i++;
 			}
 			else if (getPriority(expression.at(i)) > getPriority(S1.top().at(0)))  //±È½ÏÓÅÏÈ¼¶
 			{
@@ -75,11 +78,16 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 			}
 			else
 			{
-				do
-				{   //´ÓÔËËã·ûÕ»S1Öğ¸öÈ¡³öÔËËã·û²¢Ñ¹Èë±í´ïÊ½Õ»S2£¬Ö±µ½¸ÃÔËËã·ûÓÅÏÈ¼¶±ÈÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶¸ß
-					*ope = S1.top();   S1.pop();
-					S2.push(*ope);  
-				} while (getPriority(expression.at(i)) > getPriority(S1.top().at(0)));
+				if (!S1.empty())
+				{
+					while (getPriority(expression.at(i)) <= getPriority(S1.top().at(0)))
+					{   //´ÓÔËËã·ûÕ»S1Öğ¸öÈ¡³öÔËËã·û²¢Ñ¹Èë±í´ïÊ½Õ»S2£¬Ö±µ½¸ÃÔËËã·ûÓÅÏÈ¼¶±ÈÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶¸ß
+						ope = new string;
+						*ope = S1.top();   S1.pop();
+						S2.push(*ope);
+						if (S1.empty()) break;
+					}
+				}
 				ope = new string(1, expression.at(i));
 				S1.push(*ope);   //Íê³É²Ù×÷ºó¸ÃÔËËã·ûÓÅÏÈ¼¶±ÈÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶¸ß£¬ÈëÔËËã·ûÕ»S1
 			}
@@ -87,23 +95,41 @@ string Calculator::toReversePolish(string expression)  //´«ÈëÖĞ×º±í´ïÊ½×ªÎªÄæ²¨À
 		else
 		{ 
 			if (expression.at(i) == ' ')  i++;  //¸ôÀëµÚÒ»¸ö¿Õ¸ñ
-			fat = new string;
-			do  
+			string fat;
+			while (expression.at(i) != ' ' && expression.at(i) != '(' && expression.at(i) != ')')
 			{   //±£´æ·ÖÊı×Ö·û´®
-				*fat += expression.at(i++);
-			} while (expression.at(i) != ' ');
-			S2.push(*fat);    //Éú³É·ÖÊı×Ö·û´®£¬²¢Ñ¹Èë±í´ïÊ½Õ»S2
+				fat.push_back(expression.at(i));
+				i++;
+				if (i >= expression.length()) break;
+			}
+			if (!fat.empty())
+			{
+				S2.push(fat);    //Éú³É·ÖÊı×Ö·û´®£¬²¢Ñ¹Èë±í´ïÊ½Õ»S2
+			}
+			if (i < expression.length())
+			{
+				if (expression.at(i) == '(' || expression.at(i) == ')')  i--;
+			}
 		}
 	}
-	ope = new string;
 	while (!S2.empty())   //½«±í´ïÊ½Õ»ÄæĞò
 	{
-		*ope = S2.top();   S2.pop();
-		S1.push(*ope);
+		string op;
+		op = S2.top();   S2.pop();
+		S1.push(op);
 	}
+	exp = new string;
 	while(!S1.empty())  //×é×°Äæ²¨À¼Ê½
 	{
-		*exp = *exp + S1.top() + ' ';   S1.pop();
+		string str = S1.top();  S1.pop();
+		if (!S1.empty())
+		{
+			*exp = *exp + str + ' ';
+		}
+		else
+		{
+			*exp = *exp + str;
+		}
 	}
 	return *exp;  //·µ»ØÄæ²¨À¼Ê½
 }
@@ -114,30 +140,35 @@ BinaryTreeNode * Calculator::toTree(string exp)  //Äæ²¨À¼Ê½×ªÎªÊ÷
 	BinaryTreeNode *exp_ptr = nullptr;  //½áµãÖ¸Õë
 	BinaryTreeNode *right = nullptr;    //ÓÒº¢×ÓÖ¸Õë
 	BinaryTreeNode *left = nullptr;     //×óº¢×ÓÖ¸Õë
-	string *data, *fat;         //½áµãÊı¾İ,·ÖÊı
+	string *data_exp;         //½áµãÊı¾İ
 
-	for (int i = 1; i != exp[exp.length()]; i++)  //Öğ¸ö×Ö·û¶ÁÈ¡Äæ²¨À¼Ê½
+	for (int i = 0; i < exp.length(); i++)  //Öğ¸ö×Ö·û¶ÁÈ¡Äæ²¨À¼Ê½
 	{
-		exp_ptr = new BinaryTreeNode();
 		if (isOperator(exp.at(i)))     //¶ÁÈ¡µ½ÔËËã·û
 		{
 			right = num.top();  num.pop();
 			left = num.top();  num.pop();
-			data = new string(1,exp.at(i));     //½«ÔËËã·û×ª»¯ÎªstringÀàĞÍ£¬²¢¸³¸ø½áµãÊı¾İdata
+			data_exp = new string(1,exp.at(i));     //½«ÔËËã·û×ª»¯ÎªstringÀàĞÍ£¬²¢¸³¸ø½áµãÊı¾İdata
 			
-			BinaryTreeNode *exp_root = new BinaryTreeNode(*data, left, right);  //¹¹½¨ĞÂÊ÷
+			BinaryTreeNode *exp_root = new BinaryTreeNode(*data_exp, left, right);  //¹¹½¨ĞÂÊ÷
 			num.push(exp_root);
 		}
 		else
 		{   //¶ÁÈ¡µ½Êı×Ö£¬Éú³ÉÍêÕû·ÖÊı×Ö·û´®£¬²¢Ñ¹ÈëÊı×ÖÕ»num
 			if (exp.at(i) == ' ')   i++;   //¸ôÀëµÚÒ»¸ö¿Õ¸ñ
-			fat = new string;
-			do
-			{   //±£´æ·ÖÊı×Ö·û´®
-				*fat += exp.at(i++);
-			} while (exp.at(i) = ' ');
-			exp_ptr->data = *fat;
-			num.push(exp_ptr);
+			if (!isOperator(exp.at(i)))
+			{
+				string fat;
+				while (exp.at(i) != ' ')
+				{   //±£´æ·ÖÊı×Ö·û´®
+					fat.push_back(exp.at(i));
+					i++;
+					if (i >= exp.length()) break;
+				}
+				exp_ptr = new BinaryTreeNode;
+				exp_ptr->data = fat;
+				num.push(exp_ptr);
+			}
 		}
 	}
 	exp_ptr = num.top();  num.pop();  //´ÓÕ»¶¥È¡³ö½¨ºÃµÄÊ÷µÄ¸ù½áµã
