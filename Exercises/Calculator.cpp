@@ -131,6 +131,7 @@ BinaryTreeNode * Calculator::toTree(string exp)  //逆波兰式转为树
 		else
 		{   //读取到数字，生成完整分数字符串，并压入数字栈num
 			if (exp.at(i) == ' ')   i++;   //隔离第一个空格
+			fat = new string;
 			do
 			{   //保存分数字符串
 				*fat += exp.at(i++);
