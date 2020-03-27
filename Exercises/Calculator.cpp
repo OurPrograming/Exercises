@@ -41,58 +41,71 @@ Fraction Calculator::calculate(Fraction x1, char op, Fraction x2)
 
 string Calculator::toReversePolish(string expression)  //传入中缀表达式转为逆波兰式
 {
-	std::stack<char> S1;  //运算符栈
-	std::stack<char> S2;  //逆波兰式栈
-	char ope;
+	std::stack<string> S1;  //运算符栈
+	std::stack<string> S2;  //逆波兰式栈
+	string *ope, *fat;     //运算符,分数
+	string *exp = new string;  //逆波兰式
+	string *leftbracket = new string(1, '(');    //左括号
 
 	for (int i = 0; i != expression.length(); i++)  //从expression中逐个取出字符
 	{
+		ope = new string;
 		if (isOperator(expression.at(i)))  //若取出运算符
 		{
 			if (S1.empty() || expression.at(i) == '(')
 			{
-				S1.push(expression.at(i));   
+				ope = new string(1, expression.at(i));
+				S1.push(*ope);   
 			}
 			else if(expression.at(i) == ')')
 			{
 				do
 				{   //若提取到')'，将栈S1中的运算符逐个取出
-					ope = S1.top();   S1.pop();
-					if (ope != '(')
+					*ope = S1.top();   S1.pop();
+					if (*ope != *leftbracket)
 					{
-						S2.push(ope);  
+						S2.push(*ope);  
 					}
-				} while (ope != '(');  //取出'('后停止循环，并抛弃'('
+				} while (*ope != *leftbracket);  //取出'('后停止循环，并抛弃'('
 			}
-			else if (getPriority(expression.at(i)) > getPriority(S1.top()))  //比较优先级
+			else if (getPriority(expression.at(i)) > getPriority(S1.top().at(0)))  //比较优先级
 			{
-				S1.push(expression.at(i));  //该运算符优先级比栈顶运算符优先级高，直接入栈
+				ope = new string(1, expression.at(i));
+				S1.push(*ope);  //该运算符优先级比栈顶运算符优先级高，直接入栈
 			}
 			else
 			{
 				do
 				{   //从运算符栈S1逐个取出运算符并压入表达式栈S2，直到该运算符优先级比栈顶运算符优先级高
-					ope = S1.top();   S1.pop();
-					S2.push(ope);  
-				} while (getPriority(expression.at(i)) > getPriority(S1.top()));
-				S1.push(expression.at(i));   //完成操作后该运算符优先级比栈顶运算符优先级高，入运算符栈S1
+					*ope = S1.top();   S1.pop();
+					S2.push(*ope);  
+				} while (getPriority(expression.at(i)) > getPriority(S1.top().at(0)));
+				ope = new string(1, expression.at(i));
+				S1.push(*ope);   //完成操作后该运算符优先级比栈顶运算符优先级高，入运算符栈S1
 			}
 		}
 		else
-		{
-			S2.push(expression.at(i));   //若取出数字，直接压入表达式栈S2
+		{ 
+			if (expression.at(i) != ' ')  i++;  //隔离第一个空格
+			fat = new string;
+			do  
+			{   //保存分数字符串
+				*fat += expression.at(i++);
+			} while (expression.at(i) = ' ');
+			S2.push(*fat);    //生成分数字符串，并压入表达式栈S2
 		}
 	}
+	ope = new string;
 	while (!S2.empty())   //将表达式栈逆序
 	{
-		ope = S2.top();   S2.pop();
-		S1.push(ope);
+		*ope = S2.top();   S2.pop();
+		S1.push(*ope);
 	}
-	for (int j = 0; !S1.empty(); j++)  //输出逆波兰式
+	while(!S1.empty())  //组装逆波兰式
 	{
-		expression.at(j) = S1.top();   S1.pop();
+		*exp = *exp + S1.top() + ' ';   S1.pop();
 	}
-	return expression;  //返回逆波兰式
+	return *exp;  //返回逆波兰式
 }
 
 BinaryTreeNode * Calculator::toTree(string exp)  //逆波兰式转为树
