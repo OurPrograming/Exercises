@@ -14,13 +14,14 @@ Fraction::Fraction(int numerator, int denominator)
 
 Fraction::Fraction(string number)
 {
-	std::regex fraction("([0-9]*)('?)[0-9]+/[1-9]([0-9]*)");	//分数的形式
-	if (!std::regex_match(number, fraction))
+	std::regex fraction("([0-9]*)('?)[0-9]+/[1-9]([0-9]*)");	//分数的匹配规则
+	std::regex integer("[0-9]+");		//整数
+	if (!std::regex_match(number, fraction) && !std::regex_match(number, integer))
 	{
 		//匹配失败抛出
 		throw 1;
 	}
-	else 
+	else
 	{
 		//有点就是带分数
 		if (std::regex_search(number, std::regex("'")))
@@ -33,7 +34,7 @@ Fraction::Fraction(string number)
 			this->numerator = std::stoi(number.substr(index1 + 1, index2 - index1 - 1));
 			this->denominator = std::stoi(number.substr(index2 + 1));
 		}
-		else
+		else if (std::regex_search(number, std::regex("/")))
 		{
 			//分割字符串来取数
 			int index = number.find('/');		//找到除号的下标
@@ -41,6 +42,12 @@ Fraction::Fraction(string number)
 			this->numerator = std::stoi(number.substr(0, index));
 			this->denominator = std::stoi(number.substr(index + 1));
 			this->coefficient = 0;
+		}
+		else	//整数，赋值给系数即可
+		{
+			this->coefficient = std::stoi(number);
+			this->numerator = 0;
+			this->denominator = 1;
 		}
 	}
 }
@@ -144,13 +151,18 @@ Fraction operator+(Fraction a, Fraction b)
 
 Fraction operator-(Fraction a, Fraction b)
 {
+	//减法不能像加法一样直接减，分数部分可能会减出负数，化成假分数
+	a.improper();
+	b.improper();
+
 	Fraction result;
-	//系数部分相减，分数部分通分相减
-	result.coefficient = a.coefficient - b.coefficient;
+	
 	result.numerator = a.numerator * b.denominator - a.denominator * b.numerator;
 	result.denominator = a.denominator * b.denominator;
 	result.simple();
 
+	a.simple();
+	b.simple();
 	return result;
 }
 

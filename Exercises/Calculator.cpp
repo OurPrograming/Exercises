@@ -35,7 +35,7 @@ Fraction Calculator::calculate(Fraction x1, char op, Fraction x2)
 	case '/':
 		return x1 / x2;
 	default:
-		return 0.0;
+		return Fraction(0);
 	}
 }
 
@@ -147,13 +147,12 @@ Fraction Calculator::calcResult(BinaryTreeNode * root)
 		right = calcResult(root->rightChild);
 		if (!isOperator(root->data.at(0)))		//数字直接返回
 		{
-			return root->data;
-			//return std::stoi(root->data);
+			return Fraction(root->data);
 		}
 		else
 		{
 			return calculate(left, root->data.at(0), right);
 		}
 	}
-	return 0.0;
+	return Fraction(0);
 }

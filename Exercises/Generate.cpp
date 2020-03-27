@@ -37,9 +37,22 @@ char Generate::getOperator()
 	}
 }
 
-string Generate::getFraction()
+Fraction Generate::getFraction()
 {
-	return string();
+	//二选一 整数0还是分数1
+	std::uniform_int_distribution<int> randBool(0, 1);
+	if (randBool(mt) == 0)		//整数
+	{
+		Fraction number(getNumber());	//分母默认值为1
+		number.simple();
+		return number;
+	}
+	else
+	{
+		Fraction number(getNumber(), getNumber());
+		number.simple();
+		return number;
+	}
 }
 
 BinaryTree * Generate::genExercise()
@@ -52,8 +65,8 @@ BinaryTree * Generate::genExercise()
 	int opeNum = opeCount(mt);
 
 	//先新建出一颗最小树
-	BinaryTreeNode *left = new BinaryTreeNode(std::to_string(getNumber()));
-	BinaryTreeNode *right = new BinaryTreeNode(std::to_string(getNumber()));
+	BinaryTreeNode *left = new BinaryTreeNode(getFraction().display());
+	BinaryTreeNode *right = new BinaryTreeNode(getFraction().display());
 	string *data = new string(1, getOperator());
 	BinaryTreeNode *root = new BinaryTreeNode(*data, left, right);
 	standardization(root);
@@ -71,8 +84,8 @@ BinaryTree * Generate::genExercise()
 	//选择下一步是2或3
 	if (randBool(mt) == 0 && opeNum == 2)	//再生成一个最小树并连接
 	{
-		left = new BinaryTreeNode(std::to_string(getNumber()));
-		right = new BinaryTreeNode(std::to_string(getNumber()));
+		left = new BinaryTreeNode(getFraction().display());
+		right = new BinaryTreeNode(getFraction().display());
 		data = new string(1, getOperator());
 		BinaryTreeNode *tempRoot = new BinaryTreeNode(*data, left, right);
 		standardization(tempRoot);
@@ -105,13 +118,13 @@ BinaryTree * Generate::genExercise()
 			//二选一 左上or右上
 			if (randBool(mt) == 0)	//左上
 			{
-				left = new BinaryTreeNode(std::to_string(getNumber()));
+				left = new BinaryTreeNode(getFraction().display());
 				right = root;
 			}
 			else			//右上
 			{
 				left = root;
-				right = new BinaryTreeNode(std::to_string(getNumber()));
+				right = new BinaryTreeNode(getFraction().display());
 			}
 			data = new string(1, getOperator());
 			root = new BinaryTreeNode(*data, left, right);
@@ -142,7 +155,7 @@ void Generate::standardization(BinaryTreeNode *& root)
 	}
 }
 
-bool Generate::printTree(BinaryTreeNode * root)
+bool Generate::toString(BinaryTreeNode * root, string &strExercise)
 {
 	if (root == nullptr)
 	{
@@ -163,30 +176,29 @@ bool Generate::printTree(BinaryTreeNode * root)
 			curPriority = Calculator::getPriority(root->data.at(0));
 			if (leftPriority == 0 || curPriority == 0)
 			{
-				cerr << "表达式树不符合规范" << endl;
 				return false;
 			}
 			if (curPriority > leftPriority)		//优先级大加括号
 			{
-				cout << "(";
+				strExercise = strExercise +  "(";
 				lChildBracket = true;
 			}
 		}
 		//遍历左子树
-		printTree(root->leftChild);
+		toString(root->leftChild, strExercise);
 		//补上括号
 		if (lChildBracket == true)
 		{
-			cout << ")";
+			strExercise = strExercise + ")";
 			lChildBracket = false;
 		}
 	}
 
 	//中
 	if (Calculator::isOperator(root->data.at(0)))
-		cout << " " + root->data + " ";
+		strExercise = strExercise + " " + root->data + " ";
 	else
-		cout << root->data;
+		strExercise = strExercise + root->data;
 
 	//右
 	if (root->rightChild != nullptr)
@@ -199,23 +211,36 @@ bool Generate::printTree(BinaryTreeNode * root)
 			curPriority = Calculator::getPriority(root->data.at(0));
 			if (rightPriority == 0 || curPriority == 0)
 			{
-				cerr << "表达式树不符合规范" << endl;
 				return false;
 			}
 			if (curPriority > rightPriority)		//优先级大加括号
 			{
-				cout << "(";
+				strExercise = strExercise + "(";
 				rChildBracket = true;
 			}
 		}
 		//遍历右子树
-		printTree(root->rightChild);
+		toString(root->rightChild, strExercise);
 		//补上括号
 		if (rChildBracket == true)
 		{
-			cout << ")";
+			strExercise = strExercise + ")";
 			rChildBracket = false;
 		}
 	}
 	return true;
+}
+
+string Generate::getExercise(BinaryTreeNode * root)
+{
+	string strExercise("");
+	//转换成功
+	if (toString(root, strExercise))
+	{
+		return strExercise;
+	}
+	else
+	{
+		return string("");
+	}
 }

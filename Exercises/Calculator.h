@@ -16,7 +16,7 @@ public:
 	static int getPriority(char ope);		//返回优先级
 	static Fraction calculate(Fraction x1, char op, Fraction x2);   //两数四则运算
 
-	static string toReversePolish(string expression);	//传入中缀表达式转为逆波兰式
-	static BinaryTreeNode * toTree(string exp);			//逆波兰式转为树
+	static string toReversePolish(string expression);		//传入中缀表达式转为逆波兰式
+	static BinaryTreeNode * toTree(string exp);				//逆波兰式转为树
 	static Fraction calcResult(BinaryTreeNode *root);		//计算树的结果
 };
