@@ -49,14 +49,8 @@ void Statistics::countResult()
 		ans = strAnswer.substr(index + 1);
 		count++;	//题号
 
-		//计算题目结果
-		//string a = Calculator::toReversePolish(exe);
-		//cout << a << 'a' << endl;
-		string a = "76 11 - 20 +";
-		BinaryTreeNode * b = Calculator::toTree(a);
-
-		result = Calculator::calcResult(b);	
-		//result = Calculator::calcResult(Calculator::toTree(Calculator::toReversePolish(exe)));
+		//计算题目结果	
+		result = Calculator::calcResult(Calculator::toTree(Calculator::toReversePolish(exe)));
 
 		//判断结果
 		if (result.display() == ans)
