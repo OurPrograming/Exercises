@@ -146,12 +146,12 @@ BinaryTreeNode * Calculator::toTree(string exp)  //逆波兰式转为树
 	{
 		if (isOperator(exp.at(i)))     //读取到运算符
 		{
-			right = num.top();  num.pop();
+			right = num.top();  num.pop(); 
 			left = num.top();  num.pop();
 			data_exp = new string(1,exp.at(i));     //将运算符转化为string类型，并赋给结点数据data
-			
+
 			BinaryTreeNode *exp_root = new BinaryTreeNode(*data_exp, left, right);  //构建新树
-			num.push(exp_root);
+			num.push(exp_root);  
 		}
 		else
 		{   //读取到数字，生成完整分数字符串，并压入数字栈num
@@ -166,8 +166,15 @@ BinaryTreeNode * Calculator::toTree(string exp)  //逆波兰式转为树
 					if (i >= exp.length()) break;
 				}
 				exp_ptr = new BinaryTreeNode;
-				exp_ptr->data = fat;
-				num.push(exp_ptr);
+				if (!fat.empty())
+				{
+					exp_ptr->data = fat;
+					num.push(exp_ptr);
+				}
+			}
+			else
+			{
+				i--;
 			}
 		}
 	}
