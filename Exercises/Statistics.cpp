@@ -37,6 +37,10 @@ void Statistics::countResult()
 		//读取题目和答案
 		std::getline(exercises, strExercises);
 		std::getline(answers, strAnswer);
+		if (strExercises.empty() || strAnswer.empty())
+		{
+			break;
+		}
 		
 		//找到点号的下标
 		index = strExercises.find('.');
@@ -71,7 +75,11 @@ void Statistics::countResult()
 	grade << "Correct:" << correct.size() << "(";
 	for (ite = correct.begin(); ite != correct.end(); ite++)
 	{
-		grade << *ite << ", ";
+		grade << *ite;
+		if (ite + 1 != correct.end())
+		{
+			grade << ", ";
+		}
 	}
 	grade << ")" << endl;
 
@@ -79,7 +87,11 @@ void Statistics::countResult()
 	grade << "Wrong:" << wrong.size() << "(";
 	for (ite = wrong.begin(); ite != wrong.end(); ite++)
 	{
-		grade << *ite << ", ";
+		grade << *ite;
+		if (ite + 1 != wrong.end())
+		{
+			grade << ", ";
+		}
 	}
 	grade << ")" << endl;
 

@@ -27,7 +27,7 @@ void Parameter::generateExercises(int num, int range)
 	if (!exercises.is_open() || !answers.is_open())
 		return;
 	
-	//每生成一个表达式都与其他元素比较，不重复就入栈
+	//每生成一个表达式都与其他元素比较，不重复就入组
 	vector<BinaryTreeNode *> exe;			//用于存放表达式树
 	exe.reserve(num);						//预留空间避免过多扩容
 
@@ -65,7 +65,9 @@ void Parameter::generateExercises(int num, int range)
 		string strExercises = generate->getExercise(exe.at(i));
 		exercises << i + 1 << "." << strExercises.c_str() << endl;
 		
-		string strAnswers = Calculator::calcResult(exe.at(i)).display();
+		//转成计算器计算结果避免出错
+		BinaryTreeNode *result = Calculator::toTree(Calculator::toReversePolish(strExercises));
+		string strAnswers = Calculator::calcResult(result).display();
 		answers << i + 1 << "." << strAnswers.c_str() << endl;
 	}
 
