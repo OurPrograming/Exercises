@@ -127,6 +127,8 @@ void Fraction::simple()
 		//分子减一次分母，系数加1
 		numerator -= denominator;
 		coefficient++;
+		if (numerator == 0)
+			denominator = 1;
 	}
 }
 

@@ -12,12 +12,12 @@ int Calculator::getPriority(char ope)
 {
 	if (isOperator(ope) == true)
 	{
-		if (ope == '(' || ope == ')')
-			return 0;
 		if (ope == '+' || ope == '-')
 			return 1;
 		if (ope == '*' || ope == '/')
 			return 2;
+		if (ope == '(' || ope == ')')
+			return 3;
 	}
 	return 0;
 }
@@ -41,107 +41,162 @@ Fraction Calculator::calculate(Fraction x1, char op, Fraction x2)
 
 string Calculator::toReversePolish(string expression)  //传入中缀表达式转为逆波兰式
 {
-	std::stack<string> S1;  //运算符栈
-	std::stack<string> S2;  //逆波兰式栈
-	string *ope, *fat;     //运算符,分数
-	string *exp = new string;  //逆波兰式
-	string *leftbracket = new string(1, '(');    //左括号
+	std::stack<char> s;		//运算符栈
+	string result = "";
+	string::iterator ite;		//string迭代器
 
-	for (int i = 0; i != expression.length(); i++)  //从expression中逐个取出字符
+	for (ite = expression.begin(); ite != expression.end(); ite++)
 	{
-		ope = new string;
-		if (isOperator(expression.at(i)))  //若取出运算符
+		//空格跳过
+		if (*ite == ' ')
 		{
-			if (S1.empty() || expression.at(i) == '(')
+			continue;
+		}
+
+		//数字直接输出即可
+		if (!isOperator(*ite))
+		{
+			//以空格为界输出一整个数字
+			do 
 			{
-				ope = new string(1, expression.at(i));
-				S1.push(*ope);   
+				result.push_back(*ite);
+				ite++;
+				if (ite == expression.end() || *ite == ')')
+				{
+					ite--;		//退回一位以免越界或忽略括号
+					break;
+				}
+			} while (*ite != ' ');
+			result += " ";	//输出完加空格以区分数字
+		}
+		else	//运算符
+		{
+			//栈为空直接入栈
+			if (s.empty())
+			{
+				s.push(*ite);
 			}
-			else if(expression.at(i) == ')')
+			else if (*ite == ')')	//右括号把左括号之前的所有运算符出栈
 			{
+				//栈顶不是左括号就一直输出
+				while (!s.empty() && s.top() != '(')
+				{
+					result.push_back(s.top());
+					s.pop();
+					result += " ";
+				}
+				//遇到左括号后就弹出(不输出)
+				if (s.top() == '(')
+				{
+					s.pop();
+				}
+			}
+			else if (*ite == '(')
+			{
+				s.push(*ite);
+			}
+			else	//其他符号进行运算符优先级比较
+			{
+				//得到栈顶和当前的优先级
+				int topPriority = 0, curPriority = 0;
 				do
-				{   //若提取到')'，将栈S1中的运算符逐个取出
-					*ope = S1.top();   S1.pop();
-					if (*ope != *leftbracket)
+				{
+					topPriority = getPriority(s.top());
+					curPriority = getPriority(*ite);
+					if (topPriority == 3)
 					{
-						S2.push(*ope);  
+						break;
 					}
-				} while (*ope != *leftbracket);  //取出'('后停止循环，并抛弃'('
-			}
-			else if (getPriority(expression.at(i)) > getPriority(S1.top().at(0)))  //比较优先级
-			{
-				ope = new string(1, expression.at(i));
-				S1.push(*ope);  //该运算符优先级比栈顶运算符优先级高，直接入栈
-			}
-			else
-			{
-				do
-				{   //从运算符栈S1逐个取出运算符并压入表达式栈S2，直到该运算符优先级比栈顶运算符优先级高
-					*ope = S1.top();   S1.pop();
-					S2.push(*ope);  
-				} while (getPriority(expression.at(i)) > getPriority(S1.top().at(0)));
-				ope = new string(1, expression.at(i));
-				S1.push(*ope);   //完成操作后该运算符优先级比栈顶运算符优先级高，入运算符栈S1
+					//当前的优先级小就输出
+					if (curPriority <= topPriority)
+					{
+						result.push_back(s.top());
+						s.pop();
+						result += " ";
+					}
+					else
+					{
+						break;
+					}
+				} while (!s.empty());
+
+				//出栈结束后将当前运算符压栈
+				s.push(*ite);
 			}
 		}
-		else
-		{ 
-			if (expression.at(i) == ' ')  i++;  //隔离第一个空格
-			fat = new string;
-			do  
-			{   //保存分数字符串
-				*fat += expression.at(i++);
-			} while (expression.at(i) != ' ');
-			S2.push(*fat);    //生成分数字符串，并压入表达式栈S2
-		}
 	}
-	ope = new string;
-	while (!S2.empty())   //将表达式栈逆序
+
+	//若string遍历完成而栈还有元素
+	while (!s.empty())
 	{
-		*ope = S2.top();   S2.pop();
-		S1.push(*ope);
+		//全部出栈
+		result.push_back(s.top());
+		s.pop();
+		result += " ";
 	}
-	while(!S1.empty())  //组装逆波兰式
-	{
-		*exp = *exp + S1.top() + ' ';   S1.pop();
-	}
-	return *exp;  //返回逆波兰式
+
+	//返回结果
+	return result;
 }
 
 BinaryTreeNode * Calculator::toTree(string exp)  //逆波兰式转为树
 {
-	std::stack<BinaryTreeNode*> num;    //数字栈
-	BinaryTreeNode *exp_ptr = nullptr;  //结点指针
-	BinaryTreeNode *right = nullptr;    //右孩子指针
-	BinaryTreeNode *left = nullptr;     //左孩子指针
-	string *data, *fat;         //结点数据,分数
+	//节点栈
+	std::stack<BinaryTreeNode *> nodeStack;
 
-	for (int i = 1; i != exp[exp.length()]; i++)  //逐个字符读取逆波兰式
+	//用于构造节点数据
+	string *data = nullptr;
+	BinaryTreeNode *node = nullptr;
+	BinaryTreeNode *left = nullptr, *right = nullptr;
+
+	string::iterator ite;
+	for (ite = exp.begin(); ite != exp.end(); ite++)
 	{
-		exp_ptr = new BinaryTreeNode();
-		if (isOperator(exp.at(i)))     //读取到运算符
+		//空格跳过
+		if (*ite == ' ')
 		{
-			right = num.top();  num.pop();
-			left = num.top();  num.pop();
-			data = new string(1,exp.at(i));     //将运算符转化为string类型，并赋给结点数据data
-			
-			BinaryTreeNode *exp_root = new BinaryTreeNode(*data, left, right);  //构建新树
-			num.push(exp_root);
+			continue;
 		}
-		else
-		{   //读取到数字，生成完整分数字符串，并压入数字栈num
-			if (exp.at(i) == ' ')   i++;   //隔离第一个空格
-			fat = new string;
+
+		//数字
+		if (!isOperator(*ite))
+		{
+			//字符串用于保存数字
+			data = new string("");
+
+			//以空格区分元素
 			do
-			{   //保存分数字符串
-				*fat += exp.at(i++);
-			} while (exp.at(i) = ' ');
-			exp_ptr->data = *fat;
-			num.push(exp_ptr);
+			{
+				data->push_back(*ite);
+				ite++;
+				if (ite == exp.end())
+				{
+					ite--;
+					break;
+				}
+			} while (*ite != ' ');
+
+			//提取出数字后建立节点入栈
+			node = new BinaryTreeNode(*data);
+			nodeStack.push(node);
+		}
+		else	//运算符
+		{
+			//得到左右子树 
+			right = nodeStack.top();
+			nodeStack.pop();
+			left = nodeStack.top();
+			nodeStack.pop();
+
+			//当前运算符构造节点数据
+			data = new string(1, *ite);
+			node = new BinaryTreeNode(*data, left, right);
+			//构造完树后入栈
+			nodeStack.push(node);
 		}
 	}
-	exp_ptr = num.top();  num.pop();  //从栈顶取出建好的树的根结点
-	return exp_ptr;   //返回树的根结点
+
+	return node;
 }
 
 Fraction Calculator::calcResult(BinaryTreeNode * root)
