@@ -1,22 +1,22 @@
 #pragma once
 
+#include <stack>
 #include <string>
-
+#include "BinaryTree.h"
 
 using std::string;
+
 /*
-**	¼ÆËãÀà
+**	è®¡ç®—ç±»
 */
 class Calculator
 {
 public:
-	Calculator();
-	~Calculator();
+	static bool isOperator(char ope);		//åˆ¤æ–­æ˜¯å¦ä¸ºæ“ä½œç¬¦
+	static int getPriority(char ope);		//è¿”å›ä¼˜å…ˆçº§
+	static Fraction calculate(Fraction x1, char op, Fraction x2);   //ä¸¤æ•°å››åˆ™è¿ç®—
 
-public:
-	static bool isOperator(char ope);		//ÅĞ¶ÏÊÇ·ñÎª²Ù×÷·û
-	static int getPriority(char ope);		//·µ»ØÓÅÏÈ¼¶
-
-	static double calcular(double x1, char op, double x2);   //Á½ÊıËÄÔòÔËËã
-
+	static string toReversePolish(string expression);		//ä¼ å…¥ä¸­ç¼€è¡¨è¾¾å¼è½¬ä¸ºé€†æ³¢å…°å¼
+	static BinaryTreeNode * toTree(string exp);				//é€†æ³¢å…°å¼è½¬ä¸ºæ ‘
+	static Fraction calcResult(BinaryTreeNode *root);		//è®¡ç®—æ ‘çš„ç»“æœ
 };
